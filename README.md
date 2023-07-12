@@ -1,2 +1,2 @@
-# assignment1.skills
+# ASSIGNMENTS AND PROJECTS
 Week1.assignment
