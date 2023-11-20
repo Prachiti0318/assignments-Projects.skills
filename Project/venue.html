@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="public/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Varela&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="public/style.css">
+    <title>VENUE BOOKING SYSTEM</title>
+    <style>
+        #loader {
+            border: 10px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 10px solid #36d0ff;
+            height: 60px;
+            width: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .centered {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+
+        .whileLoadHide {
+            display: none;
+        }
+    </style>
+</head>
+
+<body onload="insertDetails(); getDates();">
+    <div id="loader" class="centered"></div>
+    <nav class="navbar navbar-dark" style="background-image: linear-gradient(90deg,#212066,#03acfa,#ddf867)">
+        <div class=" container">
+            <a class="navbar-brand" href="#" id="brand">
+            </a>
+        </div>
+    </nav>
+    <div class="container my-4 whileLoadHide">
+        <div id="carouselcontrol" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" id="img1container">
+                </div>
+                <div class="carousel-item" id="img2container">
+                    <img class="d-block w-100" alt="Second Image" id="image2" style="max-height:720px">
+                </div>
+            </div>
+            <button class=" carousel-control-prev" type="button" data-bs-target="#carouselcontrol" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselcontrol" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <div class="my-4 text-light" id="dataHolder"
+            style="padding: 20px; border-radius: 10px;background-color: hsl(228, 45%, 25%);">
+            <p id="desc"></p>
+            <div>
+                <i class="fas fa-map-marker-alt me-2"></i><span id="city" class="capitalised"></span>
+            </div><br>
+            <div>
+                <i class="far fa-building me-2"></i><span id="address"></span>
+            </div><br>
+            <div>
+                <i class="far fa-calendar-check me-2"></i><span id="days"></span>
+            </div><br>
+            <div>
+                <i class="far fa-clock me-2"></i><span id="timing"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-4 whileLoadHide" id="calholder">
+        <div class="calendar">
+            <div class="month">
+                <button id="prev" onclick="prevDates()"><i class="fas fa-angle-left"></i></button>
+                <div>
+                    <h3 id="monthandyear"></h3>
+                </div>
+                <button id="next" onclick="nextDates()"><i class="fas fa-angle-right"></i></button>
+            </div>
+            <div class="days">
+                <span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+            </div>
+            <div id="dayscontainer">
+
+            </div>
+        </div>
+        <small><i class="fas fa-info me-2"></i>Please click on any date to check slots which are already booked.</small>
+
+        <div id="bookingsDone" class="my-2">
+
+        </div>
+    </div>
+
+    <div id="bookVenue" class="container mb-4 whileLoadHide">
+        <form id="venueBookForm">
+            <h4 style="color: #00a090;">Book this venue</h4>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="custName" class="form-label">Full name</label>
+                    <input type="text" id="custName" name="customerName" class="form-control" >
+                </div>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email Id</label>
+                    <input type="email" id="email" name="EmailId" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="date" class="form-label">Date to book</label>
+                    <input type="date" id="date" name="date" class="form-control">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label" for="starttime">Time Slot - Start Time</label>
+                    <input type="time" id="starttime" class="form-control" name="start">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="endtime">Time Slot - End Time</label>
+                    <input type="time" id="endtime" class="form-control" name="end">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="purpose">What event are you conducting?</label>
+                <textarea id="purpose" rows="3" name="custPurpose" class="form-control"></textarea>
+            </div>
+            <div class="my-2 text-danger" id="bookingError"></div>
+            <button type="button" onclick="bookVenue()" class="btn text-light mb-2" id="bookVenueBtn">Book slot</button>
+            <div class="my-2 text-success" id="bookingSuccess"></div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+    <script>
+        var mmcounter, yycounter;
+
+        var today = new Date();
+
+        months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>

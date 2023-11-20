@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="public/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Varela&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="public/style.css">
+    <title>VENUE BOOKING SYSTEM</title>
+    <link rel="stylesheet" href="public/dashboard.css">
+    <style>
+        .defaultMsg {
+            margin: auto;
+            background-color: #effaff;
+        }
+
+        #venueSubmitBtn {
+            background-color: #039bec;
+            width: 100%
+        }
+    </style>
+</head>
+
+<body onload="getOwnerData();">
+    <!-- Add sign out link -->
+    <header class="navbar navbar-dark sticky-top bg-blue flex-md-nowrap py-1 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#" id="ownername"></a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <span class="w-100"></span>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <button class="btn nav-link btn-link" onclick="logout(true)">Sign out</button>
+            </li>
+        </ul>
+    </header>
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column" role="tablist">
+                        <li class="nav-item">
+                            <a type="button" class="nav-link active m-2" id="venues-tab" data-bs-toggle="pill"
+                                data-bs-target="#listedVenues" aria-selected="true" role="tab"
+                                aria-controls="listedVenues">
+                                <i class="fas fa-home me-2"></i>
+                                Venues
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a type="button" class="nav-link m-2" id="requests-tab" data-bs-toggle="pill"
+                                data-bs-target="#bookingRequests" aria-selected="false" role="tab"
+                                aria-controls="bookingRequests">
+                                <i class="fas fa-users me-2"></i>
+                                Requests
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a type="button" class="nav-link m-2" id="today-tab" data-bs-toggle="pill"
+                                data-bs-target="#todaysEvents" aria-selected="false" role="tab"
+                                aria-controls="todaysEvents">
+                                <i class="fas fa-calendar-day me-2"></i>
+                                Events today
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a type="button" class="nav-link m-2" id="stats-tab" data-bs-toggle="pill"
+                                data-bs-target="#usageStats" aria-controls="usageStats" aria-selected="false"
+                                role="tab">
+                                <i class="fas fa-chart-bar me-2"></i>
+                                Statistics
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="m-3" style="position: absolute; bottom: 0;">
+                    <button type="button" class=" m-2 btn btn-lg btn-outline-dark" data-bs-toggle="modal"
+                        data-bs-target="#addVenueModal">Add a venue</button>
+                </div>
+            </nav>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="tab-content">
+                    <div id="listedVenues" class="tab-pane active" role="tabpanel" aria-labelledby="venues-tab">
+                        <!--Div to display for new owners.No venues added yet-->
+                        <div class="card mt-4 w-75 defaultMsg d-none" id="novenues">
+                            <div class="card-body">
+                                <h5 class="mb-3" style="color: #fa5757;">Welcome to SKED!</h5>
+                                Your listed venues will show up here after you add them.<br>
+                                <button type="button" class="btn mt-3" style="background:#7cebeb;"
+                                    data-bs-toggle="modal" data-bs-target="#addVenueModal">Add a
+                                    venue</button>
+                            </div>
+                        </div>
+                        <!--Div to display for owners with atleast 1 venue added-->
+                        <div id="displayVenues" class="row">
+                            <h5 class="mt-4 mb-3 d-none" id="yourVenuesHeading">Your Venues</h5>
+                        </div>
+                    </div>
+                    <div id="bookingRequests" class="tab-pane" role="tabpanel" aria-labelledby="requests-tab">
+                        <div class="card mt-4 w-75 defaultMsg d-none" id="nobookings">
+                            <div class="card-body">
+                                You don't have any booking requests.
+                            </div>
+                        </div>
+                        <div id="displayBookings" class="row">
+                            <h5 class="mt-4 mb-3 d-none" id="bookingReq">Booking Requests</h5>
+                        </div>
+                    </div>
+                    <div id="todaysEvents" class="tab-pane" role="tabpanel" aria-labelledby="today-tab">
+                        <div class="card mt-4 w-75 defaultMsg d-none" id="nothingToday">
+                            <div class="card-body">
+                                There are no events booked for today.
+                            </div>
+                        </div>
+                        <div id="displayTodaysEvents" class="row">
+                            <h5 class="mt-4 mb-3 d-none" id="events2day">Bookings for today</h5>
+                        </div>
+                    </div>
+                    <div id="usageStats" class="tab-pane" role="tabpanel" aria-labelledby="stats-tab">
+                        <div class="card mt-4 w-75 defaultMsg">
+                            <div class="card-body">
+                                You will find room usage statistics here.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!--Add a venue modal-->
+    <div class="modal-dialog modal-xl">
+        <div class="modal fade" id="addVenueModal" data-bs-backdrop="static" tabindex="-1"
+            aria-labelledby="addVenueLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addVenueLabel">Venue Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="nameOfVenue" class="form-label">Name of the venue</label>
+                                <input type="text" id="nameOfVenue" name="venueName" class="form-control" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="addr" class="form-label">Address</label>
+                                <input type="text" id="addr" name="address" class="form-control">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="cityName" class="form-label">City</label>
+                                    <input type="text" id="cityName" name="city" class="form-control mb-3">
+                                </div>
+
+                                
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="days" class="form-label">Days Available</label>
+                                <input type="text" list="daysoptions" id="days" name="daysAvailable"
+                                    class="form-control">
+                                <datalist id="daysoptions">
+                                    <option value="Monday-Sunday">Monday-Sunday</option>
+                                    <option value="Monday-Saturday">Monday-Saturday</option>
+                                    <option value="Monday-Friday">Monday-Friday</option>
+                                </datalist>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="topen">Opens</label>
+                                    <input type="time" id="topen" class="form-control" name="timeStart">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="tclose">Closes</label>
+                                    <input type="time" id="tclose" class="form-control" name="timeEnd">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="image1" class="form-label">Venue Image - 1</label>
+                                <input class="form-control" type="file" accept="image/*" id="image1" name="image1">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="image2" class="form-label">Venue Image - 2</label>
+                                <input class="form-control" type="file" accept="image/*" id="image2" name="image2">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="desc" class="form-label">Description</label>
+                                <textarea id="desc" rows="5" name="description" class="form-control"
+                                    placeholder="Details about your venue and other facilities available"></textarea>
+                            </div>
+
+                            <div id="addVenueError" class="mb-3 text-danger"></div>
+                            <button type="button" onclick="createVenue()" id="venueSubmitBtn"
+                                class="btn text-light mb-3">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/parse/dist/parse.min.js"></script>
+    <!--<script src="script.js"></script>-->
+</body>
+
+</html>
